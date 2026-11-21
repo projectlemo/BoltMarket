@@ -38,6 +38,13 @@ class Mailer:
         )
 
     def kick(self) -> None:
+        """Wake the delivery worker, or deliver right away when ``MAIL_SYNC`` is on."""
+        if self.settings.mail_sync:
+            try:
+                self.flush()
+            except Exception:
+                log.exception("outbox flush failed")
+            return
         self._event.set()
 
     # -- worker ---------------------------------------------------------------------------

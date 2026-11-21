@@ -70,7 +70,11 @@ Public settings (`VITE_*`, see the table above) live in Vercel → Project → S
 
 **GitHub Pages instead:** set the repository variable `DEPLOY_PAGES=true` (Settings → Secrets and variables → Actions → Variables), choose Settings → Pages → Source: **GitHub Actions**, and run the **Website (GitHub Pages)** workflow. The site is then at `https://projectlemo.github.io/BoltMarket/`. For a fresh copy of the project in another account, `./scripts/publish-github.sh` creates the repository and turns on Pages.
 
-### 2. Deploy the API on Render
+### 2. Deploy the API
+
+**On Vercel (current setup).** The Vercel project `boltmarket-api` builds [`backend/`](backend) as a Python function in Frankfurt (`fra1`), using the `asgi:app` entrypoint set in `backend/pyproject.toml`. It needs a PostgreSQL database: in the project's **Storage** tab create a **Neon** database (Frankfurt region) and connect it, which adds `DATABASE_URL`. On Vercel, email is sent during the request (`MAIL_SYNC`, automatic) because no background worker runs between requests. Request bodies are capped at 4.5 MB there, so `MAX_UPLOAD_MB=4`.
+
+**On Render (Docker, always-on worker):**
 
 1. Render dashboard → **New → Blueprint** → select the repository. `render.yaml` creates the `bolt-markets-api` web service (Docker, Frankfurt) and the `bolt-markets-db` PostgreSQL database.
 2. When asked, enter `FRONTEND_URL` (`https://boltmarket.vercel.app`), `ADMIN_URL` (`https://boltmarket.vercel.app/admin`) and `BOOTSTRAP_ADMIN_EMAIL` (your email).

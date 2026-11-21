@@ -3,6 +3,19 @@ name = "bolt-markets-api"
 version = "1.0.0"
 description = "Bolt Markets client portal and back-office API"
 requires-python = ">=3.12"
+dependencies = [
+  "starlette>=1.7,<2",
+  "pydantic>=2.13,<3",
+  "PyJWT>=2.10,<3",
+  "uvicorn>=0.34",
+  "python-multipart>=0.0.20",
+  "cryptography>=43",
+  "psycopg[binary]>=3.2,<4",
+]
+
+[tool.vercel]
+# Vercel loads the ASGI app from asgi.py; uvicorn and the Docker image use app.main:app.
+entrypoint = "asgi:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

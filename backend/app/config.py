@@ -25,6 +25,12 @@ def _b(name: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _vercel_url() -> str:
+    """Production URL Vercel exposes to its functions (host name only)."""
+    host = os.environ.get("VERCEL_PROJECT_PRODUCTION_URL", "").strip()
+    return f"https://{host}" if host else ""
+
+
 def _i(name: str, default: int) -> int:
     raw = _s(name)
     return int(raw) if raw else default
@@ -60,12 +66,13 @@ class Settings:
     environment: str = field(default_factory=lambda: _s("ENVIRONMENT", "development"))
     secret_key: str = field(default_factory=lambda: _s("SECRET_KEY"))
     data_key: str = field(default_factory=lambda: _s("DATA_KEY"))
-    database_url: str = field(default_factory=lambda: _s("DATABASE_URL", "sqlite:///./bolt.db"))
+    # POSTGRES_URL is the name some hosted Postgres integrations (Vercel Marketplace) use.
+    database_url: str = field(default_factory=lambda: _s("DATABASE_URL", _s("POSTGRES_URL", "sqlite:///./bolt.db")))
     db_pool_size: int = field(default_factory=lambda: _i("DB_POOL_SIZE", 10))
     frontend_url: str = field(default_factory=lambda: _s("FRONTEND_URL", "http://localhost:5173").rstrip("/"))
     admin_url: str = field(default_factory=lambda: _s("ADMIN_URL", "http://localhost:5174").rstrip("/"))
     # Render sets RENDER_EXTERNAL_URL for every web service, so the Blueprint needs no extra value.
-    public_api_url: str = field(default_factory=lambda: _s("PUBLIC_API_URL", _s("RENDER_EXTERNAL_URL", "http://localhost:8000")).rstrip("/"))
+    public_api_url: str = field(default_factory=lambda: _s("PUBLIC_API_URL", _s("RENDER_EXTERNAL_URL", _vercel_url() or "http://localhost:8000")).rstrip("/"))
     extra_cors_origins: list[str] = field(default_factory=lambda: _list("CORS_ORIGINS"))
     api_docs: bool = field(default_factory=lambda: _b("API_DOCS", _s("ENVIRONMENT", "development") != "production"))
     trust_proxy: bool = field(default_factory=lambda: _b("TRUST_PROXY", True))
@@ -86,6 +93,9 @@ class Settings:
 
     # Email
     smtp_host: str = field(default_factory=lambda: _s("SMTP_HOST"))
+    # Deliver email during the request instead of from a background thread. Needed on serverless
+    # hosts (Vercel), where nothing runs between requests; on by default when VERCEL is set.
+    mail_sync: bool = field(default_factory=lambda: _b("MAIL_SYNC", bool(os.environ.get("VERCEL"))))
     smtp_port: int = field(default_factory=lambda: _i("SMTP_PORT", 587))
     smtp_user: str = field(default_factory=lambda: _s("SMTP_USER"))
     smtp_password: str = field(default_factory=lambda: _s("SMTP_PASSWORD"))

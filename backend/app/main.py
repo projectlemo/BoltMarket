@@ -126,7 +126,8 @@ def create_app(settings: Settings | None = None, services: Services | None = Non
     @contextlib.asynccontextmanager
     async def lifespan(app: Starlette) -> AsyncIterator[None]:
         services.quotes.bind_loop(asyncio.get_running_loop())
-        services.mailer.start()
+        if not settings.mail_sync:
+            services.mailer.start()
         services.mailer.kick()
         tasks: list[asyncio.Task[Any]] = []
         if settings.quotes_mode == "simulated":

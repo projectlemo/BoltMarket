@@ -190,7 +190,9 @@ class Database:
         import psycopg  # type: ignore[import-not-found]
         from psycopg.rows import dict_row  # type: ignore[import-not-found]
 
-        return psycopg.connect(self._target, row_factory=dict_row, autocommit=False)
+        # prepare_threshold=None: no server-side prepared statements, so the API also works behind
+        # transaction-mode poolers (PgBouncer, Neon and Supabase pooled URLs).
+        return psycopg.connect(self._target, row_factory=dict_row, autocommit=False, prepare_threshold=None)
 
     def _acquire(self) -> Any:
         try:

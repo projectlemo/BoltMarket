@@ -364,3 +364,14 @@ def test_api_with_manager_bridge_end_to_end(monkeypatch: pytest.MonkeyPatch, tmp
         assert err.value.code == 401
     finally:
         server.shutdown()
+
+
+def test_mail_sync_delivers_during_the_request(make_world: Any) -> None:
+    """Serverless hosts (MAIL_SYNC): the email is processed before the response, no worker thread."""
+    w = make_world({"MAIL_SYNC": "true"})
+    assert w.services.mailer._thread is None
+    w.register("omar@example.com", name="Omar Haddad")
+    rows = w.outbox("omar@example.com")
+    assert rows, "verification email queued"
+    # SMTP is not configured in tests, so the synchronous delivery marks it as disabled right away
+    assert {r["status"] for r in rows} == {"disabled"}

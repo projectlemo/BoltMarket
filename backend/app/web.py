@@ -404,7 +404,10 @@ def make_endpoint(ep: Endpoint, services: Services) -> Callable[[Request], Await
                         raise validation_error(exc) from exc
             result = await ep.fn(ctx) if ep.is_async else await run_in_threadpool(ep.fn, ctx)
             if ep.method != "GET":
-                services.mailer.kick()
+                if services.settings.mail_sync:
+                    await run_in_threadpool(services.mailer.kick)
+                else:
+                    services.mailer.kick()
             if isinstance(result, Response):
                 return result
             if result is None:
