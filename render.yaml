@@ -1,0 +1,66 @@
+# Render Blueprint for the Bolt Markets API and its PostgreSQL database.
+# Render dashboard → New → Blueprint → pick this repository. Render generates the secrets marked
+# generateValue and asks once for every value marked "sync: false". Payment, KYC, MT5 and SMTP keys
+# are added later under the service's Environment tab; each feature stays switched off until its keys exist.
+#
+# Free instances sleep after 15 minutes without traffic and the free database expires after 30 days:
+# move both to paid plans before taking real clients.
+services:
+  - type: web
+    name: bolt-markets-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    region: frankfurt
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bolt-markets-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      # Encrypts KYC files and 2FA secrets. Never change it once clients exist.
+      - key: DATA_KEY
+        generateValue: true
+      # e.g. https://boltmarket.vercel.app
+      - key: FRONTEND_URL
+        sync: false
+      # e.g. https://boltmarket.vercel.app/admin
+      - key: ADMIN_URL
+        sync: false
+      # First back-office administrator, created on first start. The password is generated:
+      # read it under Environment, log in, set up 2FA, then change it.
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        generateValue: true
+      - key: BOOTSTRAP_ADMIN_NAME
+        value: Platform Administrator
+      - key: ADMIN_REQUIRE_2FA
+        value: "true"
+      # Client sign-up stays closed until company details, legal review and payment keys are in place.
+      - key: REGISTRATION_OPEN
+        value: "false"
+      - key: AUTO_MIGRATE
+        value: "true"
+      - key: API_DOCS
+        value: "true"
+      - key: KYC_STORAGE
+        value: database
+      - key: MT5_MODE
+        value: disabled
+      - key: QUOTES_MODE
+        value: disabled
+
+databases:
+  - name: bolt-markets-db
+    databaseName: bolt_markets
+    user: bolt
+    region: frankfurt
+    plan: free
+    postgresMajorVersion: "17"

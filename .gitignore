@@ -1,0 +1,30 @@
+# Dependencies and builds
+node_modules/
+dist/
+.ssr/
+*.tsbuildinfo
+
+# Environment and secrets (never commit real values; see .env.example files)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Local data
+*.db
+*.sqlite3
+uploads/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

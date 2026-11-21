@@ -1,0 +1,8 @@
+# Runtime dependencies for the Bolt Markets API
+starlette>=1.7,<2
+pydantic>=2.13,<3
+PyJWT>=2.10,<3
+uvicorn>=0.34
+python-multipart>=0.0.20
+cryptography>=43
+psycopg[binary]>=3.2,<4

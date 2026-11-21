@@ -1,0 +1,13 @@
+{
+  "name": "bolt-markets-e2e",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end check of the website, client portal and back office against a local API.",
+  "scripts": {
+    "serve": "node serve-pages.mjs ../frontend/dist /bolt-markets 8090",
+    "test": "node full.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.0"
+  }
+}

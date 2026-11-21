@@ -1,0 +1,33 @@
+[project]
+name = "bolt-markets-api"
+version = "1.0.0"
+description = "Bolt Markets client portal and back-office API"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 220
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
+ignore = [
+  "S101",   # asserts are used for invariants and in tests
+  "S608",   # SQL is built from fixed fragments; values are always bound parameters
+  "B008",
+  "RUF001", "RUF002", "RUF003",  # Arabic text and typographic quotes are intentional
+  "SIM105",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106", "S310", "S311", "E501", "RUF012"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+warn_unused_ignores = false
+exclude = ["bridge/"]

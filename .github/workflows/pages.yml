@@ -1,0 +1,138 @@
+# Alternative host. Builds the public website (prerendered, English + Arabic) and the back office, and
+# publishes both to GitHub Pages:  https://<user>.github.io/<repo>/  and  https://<user>.github.io/<repo>/admin/
+#
+# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# Optional configuration: Settings → Secrets and variables → Actions → Variables (see frontend/.env.example).
+# Everything set here is compiled into public JavaScript, so only public values belong in these variables.
+name: Website (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "admin/**"
+      - ".github/workflows/pages.yml"
+  # Sent by the API when a blog post is published (GITHUB_DISPATCH_TOKEN), so new posts get prerendered.
+  repository_dispatch:
+    types: [cms-publish]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    # The live site is served by Vercel (frontend/vercel.json). Pushes publish to Pages only when the
+    # repository variable DEPLOY_PAGES is "true"; manual runs always build and publish.
+    if: github.event_name != 'push' || vars.DEPLOY_PAGES == 'true'
+    runs-on: ubuntu-latest
+    env:
+      # "/" for a custom domain; defaults to the repository name for <user>.github.io/<repo>/
+      VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || github.event.repository.name }}
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      VITE_COMPANY_LEGAL_NAME: ${{ vars.VITE_COMPANY_LEGAL_NAME }}
+      VITE_COMPANY_REG_NUMBER: ${{ vars.VITE_COMPANY_REG_NUMBER }}
+      VITE_COMPANY_ADDRESS: ${{ vars.VITE_COMPANY_ADDRESS }}
+      VITE_REGULATORY_STATUS: ${{ vars.VITE_REGULATORY_STATUS }}
+      VITE_REGULATOR_NAME: ${{ vars.VITE_REGULATOR_NAME }}
+      VITE_LICENSE_NUMBER: ${{ vars.VITE_LICENSE_NUMBER }}
+      VITE_JURISDICTION: ${{ vars.VITE_JURISDICTION }}
+      VITE_GOVERNING_LAW: ${{ vars.VITE_GOVERNING_LAW }}
+      VITE_RESTRICTED_COUNTRIES: ${{ vars.VITE_RESTRICTED_COUNTRIES }}
+      VITE_LEGAL_REVIEWED: ${{ vars.VITE_LEGAL_REVIEWED || 'false' }}
+      VITE_LEGAL_EFFECTIVE_DATE: ${{ vars.VITE_LEGAL_EFFECTIVE_DATE }}
+      VITE_SUPPORT_EMAIL: ${{ vars.VITE_SUPPORT_EMAIL }}
+      VITE_SUPPORT_PHONE: ${{ vars.VITE_SUPPORT_PHONE }}
+      VITE_SUPPORT_WHATSAPP: ${{ vars.VITE_SUPPORT_WHATSAPP }}
+      VITE_LIVE_CHAT_PROVIDER: ${{ vars.VITE_LIVE_CHAT_PROVIDER }}
+      VITE_LIVE_CHAT_ID: ${{ vars.VITE_LIVE_CHAT_ID }}
+      VITE_SOCIAL_X: ${{ vars.VITE_SOCIAL_X }}
+      VITE_SOCIAL_INSTAGRAM: ${{ vars.VITE_SOCIAL_INSTAGRAM }}
+      VITE_SOCIAL_YOUTUBE: ${{ vars.VITE_SOCIAL_YOUTUBE }}
+      VITE_SOCIAL_DISCORD: ${{ vars.VITE_SOCIAL_DISCORD }}
+      VITE_MT5_SERVER_LIVE: ${{ vars.VITE_MT5_SERVER_LIVE }}
+      VITE_MT5_SERVER_DEMO: ${{ vars.VITE_MT5_SERVER_DEMO }}
+      VITE_MT5_DOWNLOAD_WINDOWS: ${{ vars.VITE_MT5_DOWNLOAD_WINDOWS }}
+      VITE_MT5_DOWNLOAD_MAC: ${{ vars.VITE_MT5_DOWNLOAD_MAC }}
+      VITE_MT5_DOWNLOAD_IOS: ${{ vars.VITE_MT5_DOWNLOAD_IOS }}
+      VITE_MT5_DOWNLOAD_ANDROID: ${{ vars.VITE_MT5_DOWNLOAD_ANDROID }}
+      VITE_MT5_WEB_TERMINAL: ${{ vars.VITE_MT5_WEB_TERMINAL }}
+      VITE_MT5_WEB_TERMINAL_EMBED: ${{ vars.VITE_MT5_WEB_TERMINAL_EMBED }}
+      VITE_ECONOMIC_CALENDAR: ${{ vars.VITE_ECONOMIC_CALENDAR || 'true' }}
+      VITE_TRADINGVIEW_WIDGETS: ${{ vars.VITE_TRADINGVIEW_WIDGETS || 'true' }}
+      # Simulated prices are for design review only and stay off on the deployed site.
+      VITE_DEMO_PRICES: "false"
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve the public site URL
+        env:
+          OWNER: ${{ github.repository_owner }}
+          SITE_URL: ${{ vars.VITE_SITE_URL }}
+        run: |
+          base="${VITE_BASE_PATH#/}"; base="${base%/}"
+          url="$SITE_URL"
+          if [ -z "$url" ]; then
+            owner="$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')"
+            url="https://${owner}.github.io${base:+/$base}"
+          fi
+          echo "VITE_SITE_URL=$url" >> "$GITHUB_ENV"
+          echo "Site URL: $url"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install website dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+
+      - name: Unit tests (calculators, Markdown, QR, validation)
+        working-directory: frontend
+        run: npm test
+
+      - name: Build and prerender the website
+        working-directory: frontend
+        run: npm run build
+
+      - name: Check internal links
+        working-directory: frontend
+        run: npm run check:links
+
+      - name: Install back-office dependencies
+        working-directory: admin
+        run: npm install --no-audit --no-fund
+
+      - name: Build the back office
+        working-directory: admin
+        run: |
+          base="${VITE_BASE_PATH#/}"; base="${base%/}"
+          VITE_BASE_PATH="${base:+$base/}admin" npm run build
+
+      - name: Combine into one Pages artifact
+        run: |
+          mkdir -p frontend/dist/admin
+          cp -R admin/dist/. frontend/dist/admin/
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

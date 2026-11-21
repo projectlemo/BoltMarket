@@ -1,0 +1,125 @@
+[
+  {
+    "slug": "reading-the-economic-calendar",
+    "category": "insights",
+    "date": "2026-11-18",
+    "minutes": 7,
+    "motif": "calendar",
+    "title": {
+      "en": "How to read the economic calendar: payrolls, inflation and other market movers",
+      "ar": "كيف تقرأ المفكرة الاقتصادية: الوظائف والتضخم وغيرها من محركات السوق"
+    },
+    "excerpt": {
+      "en": "Forecast, previous, actual: what each column means, which releases move which markets, and how to plan around them.",
+      "ar": "التوقع والسابق والفعلي: معنى كل عمود، وأي البيانات تحرك أي سوق، وكيف تخطط لتداولك حولها."
+    }
+  },
+  {
+    "slug": "trading-gold-what-drives-the-price",
+    "category": "insights",
+    "date": "2026-11-11",
+    "minutes": 6,
+    "motif": "gold",
+    "title": { "en": "Trading gold: what really drives XAU/USD", "ar": "تداول الذهب: ما الذي يحرّك XAU/USD فعلًا" },
+    "excerpt": {
+      "en": "Real yields, the US dollar, central-bank buying and risk sentiment: the four forces behind most moves in gold.",
+      "ar": "العوائد الحقيقية والدولار ومشتريات البنوك المركزية ومعنويات المخاطرة: القوى الأربع وراء معظم تحركات الذهب."
+    }
+  },
+  {
+    "slug": "how-central-banks-move-currencies",
+    "category": "insights",
+    "date": "2026-11-04",
+    "minutes": 7,
+    "motif": "bank",
+    "title": { "en": "How central bank decisions move currency markets", "ar": "كيف تحرّك قرارات البنوك المركزية أسواق العملات" },
+    "excerpt": {
+      "en": "Rates, guidance and surprises: why a currency can fall on a rate hike and what traders watch on decision day.",
+      "ar": "الفائدة والتوجيهات والمفاجآت: لماذا قد تهبط العملة رغم رفع الفائدة، وما الذي يراقبه المتداولون يوم القرار."
+    }
+  },
+  {
+    "slug": "trading-psychology",
+    "category": "learn",
+    "date": "2026-10-28",
+    "minutes": 6,
+    "motif": "mind",
+    "title": { "en": "Trading psychology: discipline that survives a losing streak", "ar": "سيكولوجية التداول: انضباط يصمد أمام سلسلة الخسائر" },
+    "excerpt": {
+      "en": "Rules, routines and a trading journal: practical ways to stop emotions from making your decisions.",
+      "ar": "قواعد وروتين يومي ومفكرة تداول: طرق عملية تمنع مشاعرك من اتخاذ القرار بدلًا منك."
+    }
+  },
+  {
+    "slug": "margin-calls-and-stop-outs",
+    "category": "learn",
+    "date": "2026-10-21",
+    "minutes": 6,
+    "motif": "margin",
+    "title": { "en": "Margin, margin calls and stop-outs explained", "ar": "شرح الهامش ونداء الهامش والإغلاق الإجباري" },
+    "excerpt": {
+      "en": "Used margin, free margin and margin level in plain language, with a worked example of how a stop-out happens.",
+      "ar": "الهامش المستخدم والهامش الحر ومستوى الهامش بلغة بسيطة، مع مثال عملي يوضح كيف يحدث الإغلاق الإجباري."
+    }
+  },
+  {
+    "slug": "understanding-spreads-and-commissions",
+    "category": "learn",
+    "date": "2026-10-14",
+    "minutes": 5,
+    "motif": "spread",
+    "title": { "en": "Spreads and commissions: what a trade really costs", "ar": "السبريد والعمولات: التكلفة الحقيقية للصفقة" },
+    "excerpt": {
+      "en": "How to compare a spread-only account with a raw-spread account plus commission, and when each one wins.",
+      "ar": "كيف تقارن بين حساب يعتمد على السبريد فقط وحساب بسبريد خام مع عمولة، ومتى يكون كل منهما أفضل."
+    }
+  },
+  {
+    "slug": "metatrader-5-beginners-guide",
+    "category": "learn",
+    "date": "2026-10-07",
+    "minutes": 8,
+    "motif": "mt5",
+    "title": { "en": "MetaTrader 5 for beginners: your first trade, step by step", "ar": "ميتاتريدر 5 للمبتدئين: أول صفقة لك خطوة بخطوة" },
+    "excerpt": {
+      "en": "Log in, add symbols, read a chart, place an order with a stop-loss and close it: a complete first session on MT5.",
+      "ar": "سجّل الدخول وأضف الرموز واقرأ الرسم البياني ونفّذ أمرًا مع وقف الخسارة ثم أغلقه: جلستك الأولى كاملة على ميتاتريدر 5."
+    }
+  },
+  {
+    "slug": "risk-management-basics",
+    "category": "learn",
+    "date": "2026-09-30",
+    "minutes": 7,
+    "motif": "risk",
+    "title": { "en": "Risk management: size the position before you press buy", "ar": "إدارة المخاطر: حدّد حجم الصفقة قبل أن تضغط شراء" },
+    "excerpt": {
+      "en": "The 1% rule, stop-loss placement and position sizing, with a formula you can use on every trade.",
+      "ar": "قاعدة الواحد بالمئة وموضع وقف الخسارة وتحديد حجم الصفقة، مع معادلة تستخدمها في كل صفقة."
+    }
+  },
+  {
+    "slug": "pips-lots-and-leverage",
+    "category": "learn",
+    "date": "2026-09-23",
+    "minutes": 6,
+    "motif": "lots",
+    "title": { "en": "Pips, lots and leverage: the three numbers behind every trade", "ar": "النقاط واللوتات والرافعة: الأرقام الثلاثة وراء كل صفقة" },
+    "excerpt": {
+      "en": "What a pip is worth, how lot sizes scale your exposure and what leverage really changes.",
+      "ar": "كم تساوي النقطة، وكيف تضاعف أحجام اللوت تعرّضك للسوق، وما الذي تغيّره الرافعة المالية فعلًا."
+    }
+  },
+  {
+    "slug": "what-is-forex-trading",
+    "category": "learn",
+    "date": "2026-09-16",
+    "minutes": 6,
+    "motif": "pairs",
+    "title": { "en": "Forex trading explained: how currency pairs really work", "ar": "تداول الفوركس ببساطة: كيف تعمل أزواج العملات" },
+    "excerpt": {
+      "en": "Base and quote currencies, bid and ask, and why the forex market trades around the clock.",
+      "ar": "العملة الأساسية وعملة التسعير، وسعرا البيع والشراء، ولماذا يعمل سوق الفوركس على مدار الساعة."
+    }
+  }
+]
